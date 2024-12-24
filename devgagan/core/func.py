@@ -39,10 +39,10 @@ async def subscribe(app, message):
             await message.reply_text("You are Banned. Contact -- @devgaganin")
             return 1
       except UserNotParticipant:
-         await message.reply_photo(photo="https://graph.org/file/d44f024a08ded19452152.jpg",caption=script.FORCE_MSG.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Join Now...", url=f"{url}")]]))
+         await message.reply_photo(photo="https://iili.io/2h2achb.md.jpg",caption=script.FORCE_MSG.format(message.from_user.mention), reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Join Now...", url=f"{url}")]]))
          return 1
       except Exception:
-         await message.reply_text("Something Went Wrong. Contact us @devgaganin...")
+         await message.reply_text("Something Went Wrong. Contact us @free_course2_bot...")
          return 1
 
 

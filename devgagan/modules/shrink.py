@@ -53,7 +53,7 @@ async def token_handler(client, message):
     user_id = message.chat.id
     if len(message.command) <= 1:
         image_url = "https://i.postimg.cc/v8q8kGyz/startimg-1.jpg"
-        join_button = InlineKeyboardButton("Join our Channel", url="https://t.me/team_spy_pro")
+        join_button = InlineKeyboardButton("Join our Channel", url="https://t.me/TARGETALLCOURSE")
         keyboard = InlineKeyboardMarkup([[join_button]])
 
         # Send the message with the image and keyboard

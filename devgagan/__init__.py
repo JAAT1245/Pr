@@ -1,4 +1,3 @@
-#devggn
 import asyncio
 import logging
 from pyromod import listen
@@ -14,7 +13,7 @@ logging.basicConfig(
 )
 
 app = Client(
-    ":RestrictBot:",
+    "RestrictBot",
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
@@ -22,31 +21,30 @@ app = Client(
 )
 
 pro = Client("ggbot", api_id=API_ID, api_hash=API_HASH, session_string=STRING)
-sex = TelegramClient('sexrepo', API_ID, API_HASH).start(bot_token=BOT_TOKEN)
+telethon_client = TelegramClient('telethon_repo', API_ID, API_HASH).start(bot_token=BOT_TOKEN)
 
 async def auto_ping():
     while True:
         try:
-            # Fetch bot details every time auto_ping runs
-            getme = await app.get_me()  # Fetch bot profile
-        await asyncio.sleep(60)
-       # await m.delete() # Wait for 60 seconds before sending the next ping
+            getme = await app.get_me()
+            await asyncio.sleep(60)
+        except Exception as e:
+            logging.error(f"Error in auto_ping: {e}")
+            await asyncio.sleep(10)
 
-# MongoDB setup
 tclient = AsyncIOMotorClient(MONGO_DB)
-tdb = tclient["telegram_bot"]  # Your database
-token = tdb["tokens"]  # Your tokens collection
+tdb = tclient["telegram_bot"]
+token = tdb["tokens"]
 
 async def create_ttl_index():
-    """Ensure the TTL index exists for the `tokens` collection."""
-    await token.create_index("expires_at", expireAfterSeconds=0)
+    try:
+        await token.create_index("expires_at", expireAfterSeconds=0)
+        logging.info("MongoDB TTL index created.")
+    except Exception as e:
+        logging.error(f"Error creating TTL index: {e}")
 
-# Run the TTL index creation when the bot starts
 async def setup_database():
     await create_ttl_index()
-    print("MongoDB TTL index created.")
-
-# You can call this in your main bot file before starting the bot
 
 async def restrict_bot():
     global BOT_ID, BOT_NAME, BOT_USERNAME
@@ -55,14 +53,15 @@ async def restrict_bot():
     getme = await app.get_me()
     BOT_ID = getme.id
     BOT_USERNAME = getme.username
-    if getme.last_name:
-        BOT_NAME = getme.first_name + " " + getme.last_name
-    else:
-        BOT_NAME = getme.first_name
+    BOT_NAME = f"{getme.first_name} {getme.last_name}" if getme.last_name else getme.first_name
+    
     if STRING:
-        await pro.start()
-
+        try:
+            await pro.start()
+        except Exception as e:
+            logging.error(f"Failed to start client with STRING: {e}")
+    
     asyncio.create_task(auto_ping())
 
-
-loop.run_until_complete(restrict_bot())
+if __name__ == "__main__":
+    loop.run_until_complete(restrict_bot())
